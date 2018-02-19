@@ -147,7 +147,10 @@ xCT.Config = {
 			[237388] = true,		-- Mind Flay (Void Form)
 			-- Disc
 			[94472] = true,			-- Atonement
+			[81751] = true,			-- Atonement
 			[204213] = true,		-- Purge the Wicked
+			[47666] = false,		-- Penance (Damage)
+			[47550] = false,		-- Penance (Heal)
 			-- Holy
 			[14914] = true,			-- Holy Fire
 			[132157] = true,		-- Holy Nova
@@ -168,12 +171,20 @@ xCT.Config = {
 			-- Brewmaster
 			[121253] = true,		-- Keg Smash
 			[115181] = true,		-- Breath of Fire
-			[132463] = true,		-- Chi Wave (heal/damage)
+			[132463] = true,		-- Chi Wave (heal)
+			[132467] = true,		-- Chi Wave (damage)
+			[148187] = true,		-- Rushing Jade Wind
 			-- Mistweaver
+			[107270] = true,		-- Spinning Crane Kick
 			[119611] = true,		-- Renewing Mist
 			[124682] = true,		-- Enveloping Mist
 			[191894] = true,		-- Gust of Mist
 			[115175] = true,		-- Soothing Mist
+			[191840] = true,		-- Essence Font
+			-- Summons
+			[198756] = true,		-- Crane Heal
+			[198533] = true,		-- Soothing Mist (Jade Serpent Statue)
+			[227291] = true,		-- Stomp (Niuzao)
 		},
 		DRUID = {
 			-- Balance
@@ -185,6 +196,7 @@ xCT.Config = {
 			[33763] = true,			-- Lifebloom
 			[48438] = true,			-- Wild Growth
 			[81269] = true,			-- Efflorescence
+			[157982] = true,		-- Tranquility
 		},
 		SHAMAN = {
 			-- Elemental
