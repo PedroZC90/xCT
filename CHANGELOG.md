@@ -1,8 +1,14 @@
 ## xCT ChangeLog:
 
+### Changes in 1.2-release
+
+ - Added: Spell List Update #2 (Paladin Spam Filter)
+ - Fixed: Spell List Reviewed.
+ - Fixed: Auto Attack icon texture bug.
+
 ### Changes in 1.1-release
 
- - spell list update #1.
+ - Added: Spell List Update #1
 
 ### Changes in 1.0-release
 

@@ -232,10 +232,11 @@ local function IconString(event, spellID, unitFlag)
 	if (spellID) then
 		texture = select(3, GetSpellInfo(spellID))
 	elseif (event == "SWING_DAMAGE" or event == "SWING_MISSED") then
-		texture = AUTO_ATTACK_TEXTURE
 		if (CombatLog_Object_IsA(unitFlag, COMBATLOG_FILTER_MINE) or
 			CombatLog_Object_IsA(unitFlag, COMBATLOG_FILTER_MY_PET)) then
 			texture = PET_ATTACK_TEXTURE
+		else
+			texture = AUTO_ATTACK_TEXTURE
 		end
 	end
 	return IconEscapeSequence(texture, ct.iconsize, ct.iconsize, 0, 0, 64, 64, 5, 59, 5, 59)
