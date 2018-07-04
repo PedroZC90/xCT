@@ -3,7 +3,7 @@ local xCT = ns.xCT
 
 local T, C, L, G = unpack(oUFLua)
 
-local hooge = [[Interface\AddOns\xCT\HOOGE.ttf]]
+local hooge = [[Interface\AddOns\xCT\media\HOOGE.ttf]]
 local pixelfont = C.media.pixelfont
 
 ------------------------------------------------------------
