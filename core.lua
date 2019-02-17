@@ -79,11 +79,11 @@ local function UpdateSpamQueue(self, elapsed)
 end
 
 function xCT:Message(result, color, icon, index)
-    if (result) and (index) then
-        if (not color) then color = { r = 1.00, g = 0.00, b = 0.50 } end
-        if (icon) then result = result .. " " .. icon end
-        self[index]:AddMessage(result, color.r, color.g, color.b)
-    end
+    local frame = self[index]
+    if (not frame) or (not result) then return end
+    if (not color) then color = { r = 1.00, g = 0.00, b = 0.50 } end
+    if (icon) then result = result .. " " .. icon end
+    frame:AddMessage(result, color.r, color.g, color.b)
 end
 
 function xCT:UpdateUnit()
@@ -108,96 +108,93 @@ function xCT:DisableBlizzardCombatText()
     end
 end
 
+function xCT:EnableScroll()
+    for _, f in ipairs(self) do
+        f:EnableMouseWheel(true)
+        f:SetScript("OnMouseWheel", SetScroll)
+    end
+end
+
+function xCT:DisableScroll()
+    for _, f in ipairs(self) do
+        f:EnableMouseWheel(false)
+        f:SetScript("OnMouseWheel", nil)
+    end
+end
+
 function xCT:CreateFrames()
 
     local Font, FontSize, FontStyle = ct.Font, ct.FontSize, ct.FontStyle
 
-    for index = 1, 4 do
+    -- for index = 1, 4 do
+    for index, data in pairs(ct.Frames) do
 
-        local f = CreateFrame("ScrollingMessageFrame", self:GetName() .. index, self)
-        f:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-        f:SetSize(128, 128)
-        f:SetFading(true)
-        f:SetFadeDuration(ct.FadeDuration)
-        f:SetTimeVisible(ct.TimeVisible)
-        f:SetInsertMode("CENTER")
-        f:SetMaxLines(ct.MaxLines)
-        f:SetSpacing(ct.Spacing)
-        f:SetFont(Font, FontSize, FontStyle)
-        f:SetJustifyH("CENTER")
-        f:SetShadowColor(0,0,0,0.7)
-        f:SetClampedToScreen(true)
-        f:SetClampRectInsets(-7, 7, 7, -7)
-        f:SetFrameStrata("BACKGROUND")
-        f:SetFrameLevel(3)
-        
-        -- make scrollable
-        if (ct.Scrollable) then
-            f:EnableMouse(true)
-            f:EnableMouseWheel(true)
-            f:SetScript("OnMouseWheel", SetScroll)
-        end
-
-        -- resize fonts
-        if (ct.DamageFontSize == "auto") then
-            if (ct.ShowIcon) then
-                f:SetFont(ct.DamageFont, ct.IconSize, ctDamageFontStyle)
+        if (data.Enable) then
+            
+            local f = CreateFrame("ScrollingMessageFrame", self:GetName() .. index, self)
+            f:SetPoint(unpack(data.Anchor))
+            f:SetSize(unpack(data.Size))
+            f:SetFading(true)
+            f:SetFadeDuration(ct.FadeDuration)
+            f:SetTimeVisible(ct.TimeVisible)
+            f:SetInsertMode("CENTER")
+            f:SetMaxLines(ct.MaxLines)
+            f:SetSpacing(ct.Spacing)
+            f:SetFont(Font, FontSize, FontStyle)
+            f:SetJustifyH(data.Justify)
+            f:SetShadowColor(0,0,0,0.7)
+            f:SetClampedToScreen(true)
+            f:SetClampRectInsets(-7, 7, 7, -7)
+            f:SetFrameStrata("BACKGROUND")
+            f:SetFrameLevel(3)
+            
+            -- make scrollable
+            if (ct.Scrollable) then
+                f:EnableMouse(false)
+                f:EnableMouseWheel(true)
+                f:SetScript("OnMouseWheel", SetScroll)
             end
-        elseif (type(ct.DamageFontSize) == "number") then
-            f:SetFont(ct.DamageFont, ct.DamageFontSize, ct.DamageFontStyle)
+
+            -- resize fonts
+            if (ct.DamageFontSize == "auto") then
+                if (ct.ShowIcon) then
+                    f:SetFont(ct.DamageFont, ct.IconSize, ctDamageFontStyle)
+                end
+            elseif (type(ct.DamageFontSize) == "number") then
+                f:SetFont(ct.DamageFont, ct.DamageFontSize, ct.DamageFontStyle)
+            end
+
+            -- enables aoe spam merge
+            if (data.Spam) then
+                f.SpamQueue = {}
+                f:SetScript("OnUpdate", UpdateSpamQueue)
+            end
+
+            if (true) then
+                -- frame
+                f:CreateBackdrop("Transparent")
+                f.Backdrop:Hide()
+
+                -- header
+                local header = CreateFrame("Frame", f:GetName() .. "Header", f)
+                header:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, 7)
+                header:SetPoint("BOTTOMRIGHT", f, "TOPRIGHT", 0, 7)
+                header:SetHeight(16)
+                header:CreateBackdrop("Transparent")
+                header:Hide()
+
+                local text = header:CreateFontString(nil, "OVERLAY")
+                text:SetPoint("CENTER", header, "CENTER", 0, 2)
+                text:SetFont(Font, FontSize, FontStyle)
+                text:SetText(data.Name)
+                text:Hide()
+
+                f.Header = header
+                f.Text = text
+            end
+
+            self[index] = f
         end
-
-        f:ClearAllPoints()
-        if (index == 1) then
-            f.Name = "INCOME_DAMAGE"
-            f:SetPoint("CENTER", UIParent, "CENTER", 0, 60)
-            f:SetSize(204, 256)
-            f:SetJustifyH("CENTER")
-        elseif (index == 2) then
-            f.Name = "INCOME_HEALING"
-            f:SetPoint("BOTTOMRIGHT", UIParent, "CENTER", -200, 101)
-            f:SetSize(204, 256)
-            f:SetJustifyH("CENTER")
-        elseif (index == 3) then
-            f.Name = "MESSAGES"
-            f:SetPoint("BOTTOM", UIParent, "CENTER", 0, 218)
-            f:SetSize(204, 178)
-            f:SetJustifyH("CENTER")
-        elseif (index == 4) then
-            f.Name = "DAMAGE/HEALING_DONE"    
-            f:SetPoint("BOTTOMLEFT", UIParent, "CENTER", 200, 101)
-            f:SetSize(204, 256)
-            f:SetJustifyH("CENTER")
-
-            -- merge aoe spam
-            f.SpamQueue = {}
-            f:SetScript("OnUpdate", UpdateSpamQueue)
-        end
-
-        if (true) then
-            -- frame
-            f:CreateBackdrop("Transparent")
-            f.Backdrop:Hide()
-
-            -- header
-            local header = CreateFrame("Frame", f:GetName() .. "Header", f)
-            header:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, 7)
-            header:SetPoint("BOTTOMRIGHT", f, "TOPRIGHT", 0, 7)
-            header:SetHeight(16)
-            header:CreateBackdrop("Transparent")
-            header:Hide()
-
-            local text = header:CreateFontString(nil, "OVERLAY")
-            text:SetPoint("CENTER", header, "CENTER", 0, 2)
-            text:SetFont(Font, FontSize, FontStyle)
-            text:SetText(f.Name)
-            text:Hide()
-
-            f.Header = header
-            f.Text = text
-        end
-
-        self[index] = f
     end
 end
 
@@ -313,10 +310,16 @@ function xCT:UNIT_POWER_UPDATE(unit, powerToken)
 end
 
 function xCT:PLAYER_REGEN_DISABLED(...)
+    if (ct.Scrollable) then
+        self:DisableScroll()
+    end
     self:Message("+ Combat", { r = 1.00, g = 1.00, b = 1.00 }, nil, FRAME_MESSAGE)         -- ENTERING_COMBAT
 end
 
 function xCT:PLAYER_REGEN_ENABLED(...)
+    if (ct.Scrollable) then
+        self:EnableScroll()
+    end
     self:Message("- Combat", { r = 0.30, g = 1.00, b = 0.30 }, nil, FRAME_MESSAGE)         -- LEAVING_COMBAT
 end
 
@@ -347,72 +350,89 @@ function xCT:COMBAT_TEXT_UPDATE(event)
 
     -- TYPE DAMAGE
     if (event == "DAMAGE") or (event == "DAMAGE_CRIT") then
-        if (arg2 == 0) then return end
-        -- damage amount
-        result = "- " .. ShortValue(arg2)
-        -- critical
-        if (event == "DAMAGE_CRIT") then result = STRING_CRITICAL:format(result) end
+        
+        if (ct.IncomeDamage) then
+            if (arg2 == 0) then return end
+            -- damage amount
+            result = "- " .. ShortValue(arg2)
+            -- critical
+            if (event == "DAMAGE_CRIT") then result = STRING_CRITICAL:format(result) end
 
-        self:Message(result, ct.Colors["DAMAGE"], nil, FRAME_DAMAGE_INCOME)
+            self:Message(result, ct.Colors["DAMAGE"], nil, FRAME_DAMAGE_INCOME)
+        end
 
     elseif (event == "SPELL_DAMAGE") or (event == "DAMAGE_SHIELD") or (event == "SPELL_DAMAGE_CRIT") then
-        if (arg2 == 0) then return end
-        -- damage amount
-        result = "- " .. ShortValue(arg2)
-        -- critical
-        if (event == "SPELL_DAMAGE_CRIT") then result = STRING_CRITICAL:format(result) end
+    
+        if (ct.IncomeDamage) then
+            if (arg2 == 0) then return end
+            -- damage amount
+            result = "- " .. ShortValue(arg2)
+            -- critical
+            if (event == "SPELL_DAMAGE_CRIT") then result = STRING_CRITICAL:format(result) end
 
-        self:Message(result, ct.Colors["SPELL_DAMAGE"], nil, FRAME_DAMAGE_INCOME)
+            self:Message(result, ct.Colors["SPELL_DAMAGE"], nil, FRAME_DAMAGE_INCOME)
+        end
 
     elseif (event == "SPLIT_DAMAGE") then
-        if (arg2 == 0) then return end
-        -- damage amount
-        result = "- " .. ShortValue(arg2) .. " " .. STRING_WHITE:format("(split)")
+        
+        if (ct.IncomeDamage) then
+            if (arg2 == 0) then return end
+            -- damage amount
+            result = "- " .. ShortValue(arg2) .. " " .. STRING_WHITE:format("(split)")
 
-        self:Message(result, ct.Colors["SPLIT_DAMAGE"], nil, FRAME_DAMAGE_INCOME)
+            self:Message(result, ct.Colors["SPLIT_DAMAGE"], nil, FRAME_DAMAGE_INCOME)
+        end
 
     -- TYPE HEALING
     elseif (event == "HEAL") or (event == "HEAL_CRIT") or
         (event == "PERIODIC_HEAL") or (event == "PERIODIC_HEAL_CRIT") then
-
-        -- healing amount
-        result = "+ " .. ShortValue(arg3)
         
-        -- critical
-        if (event == "HEAL_CRIT") or (event == "PERIODIC_HEAL_CRIT") then
-            result = STRING_CRITICAL:format(result)
-        end
+        if (ct.IncomeHealing) then
+            -- healing amount
+            result = "+ " .. ShortValue(arg3)
+            
+            -- critical
+            if (event == "HEAL_CRIT") or (event == "PERIODIC_HEAL_CRIT") then
+                result = STRING_CRITICAL:format(result)
+            end
 
-        -- add healer name
-        if (COMBAT_TEXT_SHOW_FRIENDLY_NAMES == "1") and (UnitName(self.unit) ~= arg2) and (not event:find("PERIODIC")) then
-            result = result .. " " .. STRING_WHITE:format("[" .. arg2 .. "]")
-        end
+            -- add healer name
+            if (COMBAT_TEXT_SHOW_FRIENDLY_NAMES == "1") and (UnitName(self.unit) ~= arg2) and (not event:find("PERIODIC")) then
+                result = result .. " " .. STRING_WHITE:format("[" .. arg2 .. "]")
+            end
 
-        self:Message(result, ct.Colors["HEAL"], nil, FRAME_HEALING_INCOME)
+            self:Message(result, ct.Colors["HEAL"], nil, FRAME_HEALING_INCOME)
+        end
 
     elseif (event == "HEAL_ABSORB") or (event == "PERIODIC_HEAL_ABSORB") or (event == "HEAL_CRIT_ABSORB") then
-        -- healing amount
-        result = "+ " .. ShortValue(arg3) .. " " .. ABSORB_TRAILER:format(arg4)
+        
+        if (ct.IncomeHealing) then
+            -- healing amount
+            result = "+ " .. ShortValue(arg3) .. " " .. ABSORB_TRAILER:format(arg4)
 
-        -- critical
-        if (event == "HEAL_CRIT_ABSORB") then result = STRING_CRITICAL:format(result) end
+            -- critical
+            if (event == "HEAL_CRIT_ABSORB") then result = STRING_CRITICAL:format(result) end
 
-        -- add healer name
-        if (COMBAT_TEXT_SHOW_FRIENDLY_NAMES == "1") and (UnitName(self.unit) ~= arg2) and (not event:find("PERIODIC")) then
-            result = result .. " " .. STRING_WHITE:format("[" .. arg2 .. "]")
+            -- add healer name
+            if (COMBAT_TEXT_SHOW_FRIENDLY_NAMES == "1") and (UnitName(self.unit) ~= arg2) and (not event:find("PERIODIC")) then
+                result = result .. " " .. STRING_WHITE:format("[" .. arg2 .. "]")
+            end
+
+            self:Message(result, ct.Colors["HEAL_ABSORB"], nil, FRAME_HEALING_INCOME)
         end
-
-        self:Message(result, ct.Colors["HEAL_ABSORB"], nil, FRAME_HEALING_INCOME)
 
     elseif (event == "ABSORB_ADDED") then
-        -- absorb amount
-        result = "+ " .. ShortValue(arg3) .. STRING_WHITE:format("(" .. COMBAT_TEXT_ABSORB .. ")")
-        -- add healer name
-        if (COMBAT_TEXT_SHOW_FRIENDLY_NAMES == "1") and (UnitName(self.unit) ~= arg2) then
-            result = result .. " " .. STRING_WHITE:format("[" .. arg2 .. "]")
-        end
+        
+        if (ct.IncomeHealing) then
+            -- absorb amount
+            result = "+ " .. ShortValue(arg3) .. STRING_WHITE:format("(" .. COMBAT_TEXT_ABSORB .. ")")
+            -- add healer name
+            if (COMBAT_TEXT_SHOW_FRIENDLY_NAMES == "1") and (UnitName(self.unit) ~= arg2) then
+                result = result .. " " .. STRING_WHITE:format("[" .. arg2 .. "]")
+            end
 
-        self:Message(result, ct.Colors[event], nil, FRAME_HEALING_INCOME)
+            self:Message(result, ct.Colors[event], nil, FRAME_HEALING_INCOME)
+        end
     
     -- TYPE MISS
     elseif (event == "MISS") or (event == "SPELL_MISS") and (COMBAT_TEXT_SHOW_DODGE_PARRY_MISS == "1") then
@@ -438,31 +458,40 @@ function xCT:COMBAT_TEXT_UPDATE(event)
 
     -- TYPE RESISTANCE
     elseif (event == "ABSORB") or (event == "SPELL_ABSORB") and (COMBAT_TEXT_SHOW_RESISTANCES == "1") then
-        if (arg3) then
-            -- partial absorb
-            result = "- " .. arg2 .. " " .. ABSORB_TRAILER:format(arg3)
-        else
-            result = COMBAT_TEXT_ABSORB
+        
+        if (ct.IncomeDamage) then
+            if (arg3) then
+                -- partial absorb
+                result = "- " .. arg2 .. " " .. ABSORB_TRAILER:format(arg3)
+            else
+                result = COMBAT_TEXT_ABSORB
+            end
+            self:Message(result, ct.Colors["ABSORB"], nil, FRAME_DAMAGE_INCOME)
         end
-        self:Message(result, ct.Colors["ABSORB"], nil, FRAME_DAMAGE_INCOME)
 
-    elseif (event == "BLOCK") or (event == "SPELL_BLOCK") and (COMBAT_TEXT_SHOW_RESISTANCES == "1") then
-        if (arg3) then
-            -- partial block
-            result = "- " .. arg2 .. " " .. BLOCK_TRAILER:format(arg3)
-        else
-            result = COMBAT_TEXT_BLOCK
+    elseif (event == "BLOCK") or (event == "SPELL_BLOCK") and (COMBAT_TEXT_SHOW_RESISTANCES == "1")  then
+        
+        if (ct.IncomeDamage) then
+            if (arg3) then
+                -- partial block
+                result = "- " .. arg2 .. " " .. BLOCK_TRAILER:format(arg3)
+            else
+                result = COMBAT_TEXT_BLOCK
+            end
+            self:Message(result, ct.Colors["BLOCK"], nil, FRAME_DAMAGE_INCOME)
         end
-        self:Message(result, ct.Colors["BLOCK"], nil, FRAME_DAMAGE_INCOME)
 
-    elseif (event == "RESIST") or (event == "SPELL_RESIST") and (COMBAT_TEXT_SHOW_RESISTANCES == "1") then
-        if (arg3) then
-            -- partial resist
-            result = "- " .. arg2 .. " " .. RESIST_TRAILER:format(arg3)
-        else
-            result = COMBAT_TEXT_RESIST
+    elseif (event == "RESIST") or (event == "SPELL_RESIST") and (COMBAT_TEXT_SHOW_RESISTANCES == "1")  then
+        
+        if (ct.IncomeDamage) then
+            if (arg3) then
+                -- partial resist
+                result = "- " .. arg2 .. " " .. RESIST_TRAILER:format(arg3)
+            else
+                result = COMBAT_TEXT_RESIST
+            end
+            self:Message(result, ct.Colors["RESIST"], nil, FRAME_DAMAGE_INCOME)
         end
-        self:Message(result, ct.Colors["RESIST"], nil, FRAME_DAMAGE_INCOME)
     
     -- TYPE CAST
     elseif (event == "SPELL_ACTIVE") and (COMBAT_TEXT_SHOW_REACTIVES == "1") then

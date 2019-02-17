@@ -17,7 +17,7 @@ local STRING_OVERKILL       = "|cffffffff(%s overkill)|r"
 
 -- returns short value of a number.
 local ShortValue = function(v)
-    if (ct.ShortValue) then
+    if (ct.ShortValues) then
         if (v >= 1e6) then
             return gsub(format("%.2fm", v / 1e6), "%.?0+([km])$", "%1")
         elseif (v >= 1e3 or v <= -1e3) then

@@ -1,5 +1,9 @@
-## xCT ChangeLog:
+# xCT ChangeLog:
 
-### Changes in 2.0-release
+## Changes in 2.1-release
+
++ Added: options to enable/disable frames.
+
+## Changes in 2.0-release
 
 + Updated to support **World of Warcraft - Battle of Azeroth (Patch 8.1)**
