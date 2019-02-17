@@ -1,10 +1,11 @@
-## Interface: 70300
+## Interface: 80100
 ## Author: Affli @ RU-Howling Fjord
-## Editor: Luaerror
-## Version: 1.2-release
+## Editor: Luaerror @ US-Azralon
+## Version: 2.0
 ## Title: |cff00FF96xCT|r
 ## Notes: Minimal CombatText
 ## Website: https://github.com/PedroZC90/xCT
-## RequiredDeps: oUF_Lua, Blizzard_CombatText
+## RequiredDeps: Blizzard_CombatText
+## SavedVariables: xCTData
 
 xCT.xml
