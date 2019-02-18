@@ -5,6 +5,7 @@
 + Added: options to enable/disable frames.
 + Added: command /xct help.
 + Changed: disabling combat text extra/others events messages.
++ Changed: low health/mana message color.
 
 ## Changes in 2.0-release
 
