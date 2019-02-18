@@ -7,7 +7,7 @@ ns.xCT.Title = GetAddOnMetadata(addon, 'Title')
 ns.xCT.Version = GetAddOnMetadata(addon, 'Version')
 ns.xCT.VersionNumber = tonumber(ns.xCT.Version)
 ns.xCT.Description = GetAddOnMetadata(addon, 'Notes')
-ns.xCT.WelcomeMessage = string.format("|cff00ff96xCT %s|r - /xct help", ns.xCT.Version)
+ns.xCT.WelcomeMessage = string.format("|cffb3ff19xCT %s|r - /xct help", ns.xCT.VersionNumber)
 
 -- Character
 ns.xCT.myName = UnitName("player")

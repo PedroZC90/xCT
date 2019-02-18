@@ -5,6 +5,9 @@ local ct = ns.Config
 ----------------------------------------------------------------
 -- Commands
 ----------------------------------------------------------------
+-- string formats
+local STRING_COLOR = "|cffb3ff19%s|r"
+
 local function CommandSplit(cmd)
     if (cmd:find("%s")) then
         return strsplit(" ", cmd)
@@ -34,5 +37,11 @@ SlashCmdList["XCT"] = function(cmd)
                 frame.Text:Hide()
             end
         end
+    elseif (arg1 == "") or (arg1 == "help") then
+        print(" ")
+        print(STRING_COLOR:format("xCT Commands:"))
+        print(STRING_COLOR:format("show:"), "Display Frames.")
+        print(STRING_COLOR:format("hide:"), "Hide Frames.")
+        print(" ")
     end
 end

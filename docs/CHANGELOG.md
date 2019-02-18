@@ -3,6 +3,7 @@
 ## Changes in 2.1-release
 
 + Added: options to enable/disable frames.
++ Added: command /xct help.
 
 ## Changes in 2.0-release
 

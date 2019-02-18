@@ -13,6 +13,8 @@ end)
 function f:ADDON_LOADED(addon)
     if (addon ~= "xCT")then return end
 
+    print(xCT.WelcomeMessage)
+
     -- load saved variables
     local Name = UnitName("player")
     local Realm = GetRealmName()
