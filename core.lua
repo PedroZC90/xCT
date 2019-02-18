@@ -281,7 +281,7 @@ function xCT:UNIT_HEALTH(unit, ...)
     
     if (percentage <= COMBAT_TEXT_LOW_HEALTH_THRESHOLD ) then
         if (not self.lowHealth) then
-            local color = ct.Colors["HEALTH"]
+            local color = ct.Colors["HEALTH_LOW"]
             self:Message(HEALTH_LOW, color, nil, FRAME_MESSAGE)
             self.lowHealth = true
         end
@@ -300,7 +300,7 @@ function xCT:UNIT_POWER_UPDATE(unit, powerToken)
 
     if (max ~= 0) and (powerToken == "MANA") and (percentage <= COMBAT_TEXT_LOW_MANA_THRESHOLD) then
         if (not self.lowMana) then
-            local color = ct.Colors.Power[powerToken]
+            local color = ct.Colors["MANA_LOW"]
             self:Message(MANA_LOW, color, nil, FRAME_MESSAGE)
             self.lowMana = true
         end
@@ -557,17 +557,18 @@ function xCT:COMBAT_TEXT_UPDATE(event)
         if (arg2 > 0) then
             arg2 = "+ " .. arg2
         end
-        result = COMBAT_TEXT_HONOR_GAINED:format(arg2);
+        result = COMBAT_TEXT_HONOR_GAINED:format(arg2)
         
         self:Message(result, ct.Colors[event], nil, FRAME_MESSAGE)
 
-    -- TYPE OTHERS (e.g: EXTRA_ATTACKS, INTERRUPT, SPELL_DISPELLED, ...)
     else
-        -- build message
-        result = _G["COMBAT_TEXT_" .. event]
-        if (not result) then result = _G[event] end
-        
-        self:Message(result, { r = 1.00, g = 1.00, b = 1.00 }, nil, FRAME_MESSAGE)
+        -- TYPE OTHERS (e.g: EXTRA_ATTACKS, INTERRUPT, SPELL_DISPELLED, ...)
+        if (false) then
+            result = _G["COMBAT_TEXT_" .. event]
+            if (not result) then result = _G[event] end
+            
+            self:Message(result, { r = 1.00, g = 1.00, b = 1.00 }, nil, FRAME_MESSAGE)
+        end
     end
 end
 
