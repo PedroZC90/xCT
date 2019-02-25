@@ -33,7 +33,7 @@ ns.Config = {
     ["TimeVisible"] = 3,                    -- sets the amount of time for a message remains visible before beggin to fade-out.
     ["MaxLines"] = 64,                      -- sets the maximum number of messages to be kept in the frame.
     ["Spacing"] = 2,                        -- sets the spacing between lines.
-    ["Scrollable"] = true,                  -- enables scrolling frame lines with mousewheel.
+    ["Scrollable"] = false,                 -- enables scrolling frame lines with mousewheel.
 
     -- Modules
     ["MergeAoESpam"] = true,                -- merge multiples damage/healing messages into a single one value (useful for dots too).

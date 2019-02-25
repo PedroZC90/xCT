@@ -122,6 +122,7 @@ ct["AoESpam"] = {
             -- Healing Effect
             [47750] = true,                 -- Penance
             [81751] = true,                 -- Atonement
+            [194509] = true,                -- Power Word: Radiance
             [204213] = true,                -- Purge the Wicked
             [281265] = true,                -- Holy Nova
 
@@ -137,6 +138,7 @@ ct["AoESpam"] = {
             [64844] = true,                 -- Divine Hymn
             [77489] = true,                 -- Echo of Light
             [204883] = true,                -- Circle of Healing
+            [243241] = true,                -- Cosmic Ripple
             [265202] = true,                -- Holy Word: Salvation
 
         -- Shadow

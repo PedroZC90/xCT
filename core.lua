@@ -829,20 +829,24 @@ function xCT:COMBAT_LOG_EVENT_UNFILTERED()
         else
             if (missType == "RESIST") or (missType == "BLOCK") or (missType == "ABSORB") and (amountMissed ~= 0) then
                 result = _G["TEXT_MODE_A_STRING_RESULT_" .. missType]:format(ShortValue(amountMissed))
+            elseif (missType == "REFLECT") then
+                result = "Reflected"
             else
                 result = _G["ACTION_SWING_MISSED_" .. missType]
             end
         end
         
-        -- remove parentesis
-        result = strtrim(result, "()")
-
         -- get ability icon
         if (spellID) and (ct.ShowIcon) then
             icon = IconString(select(3, GetSpellInfo(spellID)))
         end
 
-        self:Message(result, ct.Colors["MISS"], icon, FRAME_DAMAGE_HEAL_DONE)
+        if (result) then
+            -- remove parentesis
+            result = strtrim(result, "()")
+
+            self:Message(result, ct.Colors["MISS"], icon, FRAME_DAMAGE_HEAL_DONE)
+        end
 
     elseif (event == "DISPEL") and (ct.Dispel) then
 
