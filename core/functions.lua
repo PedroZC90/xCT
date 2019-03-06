@@ -1,6 +1,7 @@
 local _, ns = ...
 local xCT = ns.xCT
 local ct = ns.Config
+local md = ns.Medias
 
 ----------------------------------------------------------------
 -- Functions
@@ -32,7 +33,7 @@ xCT.ShortValue = ShortValue
 
 -- returns icon scape sequence of a texture.
 local IconString = function(texture)
-    if (not texture) then texture = ct.Medias.Blank end
+    if (not texture) then texture = md.Blank end
     return "\124T" .. texture .. ":" .. ct.IconSize .. ":" .. ct.IconSize .. ":0:0:64:64:5:59:5:59\124t"
 end
 xCT.IconString = IconString

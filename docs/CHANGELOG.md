@@ -1,5 +1,9 @@
 # xCT ChangeLog:
 
+## Changes in 2.2-release
+
++ Fixed: no icon texture error.
+
 ## Changes in 2.1-release
 
 + Added: options to enable/disable frames.
